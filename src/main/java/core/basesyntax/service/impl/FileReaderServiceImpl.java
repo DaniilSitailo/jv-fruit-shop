@@ -1,12 +1,13 @@
-package core.basesyntax;
+package core.basesyntax.service.impl;
 
+import core.basesyntax.service.FileReaderService;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileReaderImpl implements FileReader {
+public class FileReaderServiceImpl implements FileReaderService {
     @Override
     public List<String> read(String filePath) throws IOException {
         List<String> lines = new ArrayList<>();

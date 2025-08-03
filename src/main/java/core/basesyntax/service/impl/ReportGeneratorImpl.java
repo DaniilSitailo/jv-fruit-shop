@@ -1,14 +1,11 @@
-package core.basesyntax;
+package core.basesyntax.service.impl;
+
+import core.basesyntax.db.Storage;
+import core.basesyntax.service.ReportGenerator;
 
 public class ReportGeneratorImpl implements ReportGenerator {
-    private final Storage storage;
-
-    public ReportGeneratorImpl(Storage storage) {
-        this.storage = storage;
-    }
-
     @Override
-    public String getReport() {
+    public String getReport(Storage storage) {
         StringBuilder report = new StringBuilder();
         report.append("fruit,quantity\n");
         storage.getInventory().forEach((fruit, quantity) -> {
@@ -16,8 +13,4 @@ public class ReportGeneratorImpl implements ReportGenerator {
         });
         return report.toString();
     }
-}
-
-interface ReportGenerator {
-    String getReport();
 }

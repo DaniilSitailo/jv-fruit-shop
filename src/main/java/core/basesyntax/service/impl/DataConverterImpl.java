@@ -1,5 +1,7 @@
-package core.basesyntax;
+package core.basesyntax.service.impl;
 
+import core.basesyntax.model.FruitTransaction;
+import core.basesyntax.service.DataConverter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +18,9 @@ public class DataConverterImpl implements DataConverter {
             String fruit = parts[1].trim();
             int quantity = Integer.parseInt(parts[2].trim());
 
-            Operation operation = Operation.fromCode(operationCode);
+            FruitTransaction.Operation operation = FruitTransaction.Operation.fromCode(operationCode);
             transactions.add(new FruitTransaction(operation, fruit, quantity));
         }
         return transactions;
     }
-}
-
-interface DataConverter {
-    List<FruitTransaction> convertToTransaction(List<String> inputReport);
 }

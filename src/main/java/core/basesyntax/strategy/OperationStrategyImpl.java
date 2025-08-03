@@ -1,6 +1,9 @@
-package core.basesyntax;
+package core.basesyntax.strategy;
 
-import java.util.HashMap;
+import core.basesyntax.model.FruitTransaction;
+import core.basesyntax.db.Storage;
+import core.basesyntax.service.OperationStrategy;
+
 import java.util.Map;
 
 public class OperationStrategyImpl implements OperationStrategy {
@@ -18,8 +21,4 @@ public class OperationStrategyImpl implements OperationStrategy {
         }
         handler.handle(transaction, storage);
     }
-}
-
-interface OperationStrategy {
-    void process(FruitTransaction transaction, Storage storage);
 }

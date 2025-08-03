@@ -1,8 +1,8 @@
-package core.basesyntax;
+package core.basesyntax.service;
 
 import java.io.IOException;
 import java.util.List;
 
-public interface FileReader {
+public interface FileReaderService {
     List<String> read(String filePath) throws IOException;
 }
