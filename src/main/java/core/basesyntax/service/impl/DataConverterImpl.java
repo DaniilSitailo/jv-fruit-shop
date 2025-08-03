@@ -18,7 +18,8 @@ public class DataConverterImpl implements DataConverter {
             String fruit = parts[1].trim();
             int quantity = Integer.parseInt(parts[2].trim());
 
-            FruitTransaction.Operation operation = FruitTransaction.Operation.fromCode(operationCode);
+            FruitTransaction.Operation operation = FruitTransaction
+                    .Operation.fromCode(operationCode);
             transactions.add(new FruitTransaction(operation, fruit, quantity));
         }
         return transactions;

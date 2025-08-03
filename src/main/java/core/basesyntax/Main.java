@@ -15,11 +15,10 @@ import core.basesyntax.service.impl.ReportGeneratorImpl;
 import core.basesyntax.service.impl.ShopServiceImpl;
 import core.basesyntax.strategy.BalanceOperation;
 import core.basesyntax.strategy.OperationHandler;
+import core.basesyntax.strategy.OperationStrategyImpl;
 import core.basesyntax.strategy.PurchaseOperation;
 import core.basesyntax.strategy.ReturnOperation;
 import core.basesyntax.strategy.SupplyOperation;
-import core.basesyntax.strategy.OperationStrategyImpl;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,8 @@ public class Main {
 
             // 2. Convert the incoming data into FruitTransactions list
             DataConverter dataConverter = new DataConverterImpl();
-            List<FruitTransaction> transactions = dataConverter.convertToTransaction(inputReport);
+            final List<FruitTransaction> transactions =
+                    dataConverter.convertToTransaction(inputReport);
 
             // 3. Create and populate the map with all OperationHandler implementations
             Map<FruitTransaction.Operation, OperationHandler> operationHandlers = new HashMap<>();
@@ -58,7 +58,8 @@ public class Main {
             FileWriterService fileWriter = new FileWriterServiceImpl();
             fileWriter.write(resultingReport, "finalReport.csv");
 
-            System.out.println("Processing completed successfully. Report saved to finalReport.csv");
+            System.out.println("Processing completed successfully. "
+                    + "Report saved to finalReport.csv");
         } catch (IOException e) {
             System.err.println("Error processing file: " + e.getMessage());
         } catch (IllegalArgumentException e) {
