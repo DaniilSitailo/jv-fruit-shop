@@ -25,48 +25,32 @@ import java.util.List;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) {
-        try {
-            // 1. Read the data from the input CSV file
-            FileReaderService fileReader = new FileReaderServiceImpl();
-            List<String> inputReport = fileReader.read("reportToRead.csv");
+    private static final String INPUT_FILE_PATH = "data/reportToRead.csv";
+    private static final String OUTPUT_FILE_PATH = "data/finalReport.csv";
 
-            // 2. Convert the incoming data into FruitTransactions list
-            DataConverter dataConverter = new DataConverterImpl();
-            final List<FruitTransaction> transactions =
-                    dataConverter.convertToTransaction(inputReport);
+    private static final Storage STORAGE = new Storage();
 
-            // 3. Create and populate the map with all OperationHandler implementations
-            Map<FruitTransaction.Operation, OperationHandler> operationHandlers = new HashMap<>();
-            operationHandlers.put(FruitTransaction.Operation.BALANCE, new BalanceOperation());
-            operationHandlers.put(FruitTransaction.Operation.SUPPLY, new SupplyOperation());
-            operationHandlers.put(FruitTransaction.Operation.PURCHASE, new PurchaseOperation());
-            operationHandlers.put(FruitTransaction.Operation.RETURN, new ReturnOperation());
+    public static void main(String[] args) throws IOException {
+        FileReaderService fileReader = new FileReaderServiceImpl();
+        List<String> inputReport = fileReader.read(INPUT_FILE_PATH);
 
-            OperationStrategy operationStrategy = new OperationStrategyImpl(operationHandlers);
+        DataConverter dataConverter = new DataConverterImpl();
+        final List<FruitTransaction> transactions = dataConverter.convertToTransaction(inputReport);
 
-            // 4. Process the incoming transactions with applicable OperationHandler implementations
-            Storage storage = new Storage();
-            ShopService shopService = new ShopServiceImpl(operationStrategy);
-            shopService.process(transactions, storage);
+        Map<FruitTransaction.Operation, OperationHandler> operationHandlers = new HashMap<>();
+        operationHandlers.put(FruitTransaction.Operation.BALANCE, new BalanceOperation());
+        operationHandlers.put(FruitTransaction.Operation.SUPPLY, new SupplyOperation());
+        operationHandlers.put(FruitTransaction.Operation.PURCHASE, new PurchaseOperation());
+        operationHandlers.put(FruitTransaction.Operation.RETURN, new ReturnOperation());
 
-            // 5. Generate report based on the current Storage state
-            ReportGenerator reportGenerator = new ReportGeneratorImpl();
-            String resultingReport = reportGenerator.getReport(storage);
+        OperationStrategy operationStrategy = new OperationStrategyImpl(operationHandlers);
+        ShopService shopService = new ShopServiceImpl(operationStrategy);
+        shopService.process(transactions, STORAGE);
 
-            // 6. Write the received report into the destination file
-            FileWriterService fileWriter = new FileWriterServiceImpl();
-            fileWriter.write(resultingReport, "finalReport.csv");
+        ReportGenerator reportGenerator = new ReportGeneratorImpl();
+        String resultingReport = reportGenerator.getReport(STORAGE);
 
-            System.out.println("Processing completed successfully. "
-                    + "Report saved to finalReport.csv");
-        } catch (IOException e) {
-            System.err.println("Error processing file: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.err.println("Invalid data: " + e.getMessage());
-        } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
-            e.printStackTrace();
-        }
+        FileWriterService fileWriter = new FileWriterServiceImpl();
+        fileWriter.write(resultingReport, OUTPUT_FILE_PATH);
     }
 }
