@@ -4,15 +4,20 @@ import core.basesyntax.service.FileWriterService;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileWriterServiceImpl implements FileWriterService {
     @Override
     public void write(String report, String filePath) {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath))) {
+        Path path = Paths.get(filePath);
+        try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(report);
         } catch (IOException e) {
-            throw new RuntimeException("Error writing report to file: " + filePath, e);
+            throw new RuntimeException("Failed to write to file: " + path.toAbsolutePath(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error writing file: "
+                    + path.toAbsolutePath(), e);
         }
     }
 }

@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Storage {
-    private final Map<String, Integer> inventory;
-
-    public Storage() {
-        this.inventory = new HashMap<>();
-    }
+    public static final Map<String, Integer> inventory = new HashMap<>();
 
     public void setBalance(String fruit, int quantity) {
         inventory.put(fruit, quantity);
@@ -31,6 +27,6 @@ public class Storage {
     }
 
     public Map<String, Integer> getInventory() {
-        return new HashMap<>(inventory); // Return a copy to prevent external modification
+        return new HashMap<>(inventory);
     }
 }

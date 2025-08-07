@@ -24,8 +24,12 @@ public class FileReaderServiceImpl implements FileReaderService {
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
+        } catch (NullPointerException e) {
+            throw new RuntimeException("File not found on classpath: " + filePath, e);
         } catch (IOException e) {
-            throw new RuntimeException("Error reading file from path: " + filePath, e);
+            throw new RuntimeException("Error reading file: " + filePath, e);
+        } catch (Exception e) {
+            throw new RuntimeException("Unexpected error reading file: " + filePath, e);
         }
         return lines;
     }

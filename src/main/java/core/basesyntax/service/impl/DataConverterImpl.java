@@ -6,20 +6,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataConverterImpl implements DataConverter {
+    private static final String DELIMITER = ",";
+    private static final int OPERATION_INDEX = 0;
+    private static final int FRUIT_INDEX = 1;
+    private static final int QUANTITY_INDEX = 2;
+    private static final int EXPECTED_PARTS_COUNT = 3;
+
     @Override
     public List<FruitTransaction> convertToTransaction(List<String> inputReport) {
         List<FruitTransaction> transactions = new ArrayList<>();
-        for (String line : inputReport) {
-            String[] parts = line.split(",");
-            if (parts.length != 3) {
-                throw new IllegalArgumentException("Invalid line format: " + line);
+        for (int i = 0; i < inputReport.size(); i++) {
+            String line = inputReport.get(i).trim();
+            if (line.isEmpty()) {
+                continue;
             }
-            String operationCode = parts[0].trim();
-            String fruit = parts[1].trim();
-            int quantity = Integer.parseInt(parts[2].trim());
 
-            FruitTransaction.Operation operation = FruitTransaction
-                    .Operation.fromCode(operationCode);
+            if (i == 0 && (line.toLowerCase().startsWith("operation") || line.contains("fruit"))) {
+                continue;
+            }
+
+            String[] parts = line.split(DELIMITER);
+            if (parts.length != EXPECTED_PARTS_COUNT) {
+                throw new IllegalArgumentException(
+                        "Invalid line format at line " + (i + 1) + ": expected 3 parts, got "
+                                + parts.length);
+            }
+
+            String operationCode = parts[OPERATION_INDEX].trim();
+            String fruit = parts[FRUIT_INDEX].trim();
+            int quantity;
+
+            try {
+                quantity = Integer.parseInt(parts[QUANTITY_INDEX].trim());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid quantity at line "
+                        + (i + 1) + ": " + parts[QUANTITY_INDEX], e);
+            }
+
+            FruitTransaction.Operation operation =
+                    FruitTransaction.Operation.fromCode(operationCode);
             transactions.add(new FruitTransaction(operation, fruit, quantity));
         }
         return transactions;

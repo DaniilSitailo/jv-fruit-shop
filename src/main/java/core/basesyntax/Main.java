@@ -28,8 +28,6 @@ public class Main {
     private static final String INPUT_FILE_PATH = "data/reportToRead.csv";
     private static final String OUTPUT_FILE_PATH = "data/finalReport.csv";
 
-    private static final Storage STORAGE = new Storage();
-
     public static void main(String[] args) throws IOException {
         FileReaderService fileReader = new FileReaderServiceImpl();
         List<String> inputReport = fileReader.read(INPUT_FILE_PATH);
@@ -37,18 +35,21 @@ public class Main {
         DataConverter dataConverter = new DataConverterImpl();
         final List<FruitTransaction> transactions = dataConverter.convertToTransaction(inputReport);
 
+        Storage storage = new Storage();
+
         Map<FruitTransaction.Operation, OperationHandler> operationHandlers = new HashMap<>();
-        operationHandlers.put(FruitTransaction.Operation.BALANCE, new BalanceOperation());
-        operationHandlers.put(FruitTransaction.Operation.SUPPLY, new SupplyOperation());
-        operationHandlers.put(FruitTransaction.Operation.PURCHASE, new PurchaseOperation());
-        operationHandlers.put(FruitTransaction.Operation.RETURN, new ReturnOperation());
+        operationHandlers.put(FruitTransaction.Operation.BALANCE, new BalanceOperation(storage));
+        operationHandlers.put(FruitTransaction.Operation.SUPPLY, new SupplyOperation(storage));
+        operationHandlers.put(FruitTransaction.Operation.PURCHASE, new PurchaseOperation(storage));
+        operationHandlers.put(FruitTransaction.Operation.RETURN, new ReturnOperation(storage));
 
         OperationStrategy operationStrategy = new OperationStrategyImpl(operationHandlers);
-        ShopService shopService = new ShopServiceImpl(operationStrategy);
-        shopService.process(transactions, STORAGE);
+        ShopService shopService = new ShopServiceImpl(operationStrategy, storage);
+
+        shopService.process(transactions);
 
         ReportGenerator reportGenerator = new ReportGeneratorImpl();
-        String resultingReport = reportGenerator.getReport(STORAGE);
+        String resultingReport = reportGenerator.getReport(storage);
 
         FileWriterService fileWriter = new FileWriterServiceImpl();
         fileWriter.write(resultingReport, OUTPUT_FILE_PATH);

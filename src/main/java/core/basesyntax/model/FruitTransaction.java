@@ -1,17 +1,13 @@
 package core.basesyntax.model;
 
 public class FruitTransaction {
-    private Operation operation;
-    private String fruit;
-    private int quantity;
-
     public enum Operation {
         BALANCE("b"),
         SUPPLY("s"),
         PURCHASE("p"),
         RETURN("r");
 
-        private String code;
+        private final String code;
 
         Operation(String code) {
             this.code = code;
@@ -30,6 +26,10 @@ public class FruitTransaction {
             throw new IllegalArgumentException("Invalid operation code: " + code);
         }
     }
+
+    private final Operation operation;
+    private final String fruit;
+    private final int quantity;
 
     public FruitTransaction(Operation operation, String fruit, int quantity) {
         this.operation = operation;

@@ -1,6 +1,5 @@
 package core.basesyntax.strategy;
 
-import core.basesyntax.db.Storage;
 import core.basesyntax.model.FruitTransaction;
 import core.basesyntax.service.OperationStrategy;
 import java.util.Map;
@@ -14,11 +13,11 @@ public class OperationStrategyImpl implements OperationStrategy {
     }
 
     @Override
-    public void process(FruitTransaction transaction, Storage storage) {
+    public void process(FruitTransaction transaction, core.basesyntax.db.Storage storage) {
         OperationHandler handler = operationHandlers.get(transaction.getOperation());
         if (handler == null) {
             throw new IllegalArgumentException("Unknown operation: " + transaction.getOperation());
         }
-        handler.handle(transaction, storage);
+        handler.handle(transaction);
     }
 }
